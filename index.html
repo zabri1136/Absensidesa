@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAP Desa Lando — Sistem Informasi Absensi Perangkat Desa</title>
+
+  <!-- Bootstrap 5.3.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --desa-green-dark: #0f5132;
+      --desa-green: #157347;
+      --desa-green-light: #d1e7dd;
+      --desa-accent: #198754;
+      --desa-navy: #1e3a8a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #f8fafc;
+      color: #334155;
+    }
+
+    .bg-desa-gradient {
+      background: linear-gradient(135deg, #0f5132 0%, #157347 50%, #1e40af 100%);
+      color: #ffffff;
+    }
+
+    .navbar-desa {
+      background: linear-gradient(135deg, #0f5132 0%, #157347 60%, #1e3a8a 100%);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .badge-status-hadir {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      font-weight: 600;
+    }
+
+    .badge-status-terlambat {
+      background-color: #fff3cd;
+      color: #664d03;
+      font-weight: 600;
+    }
+
+    .badge-status-izin {
+      background-color: #cfe2ff;
+      color: #084298;
+      font-weight: 600;
+    }
+
+    .badge-status-sakit {
+      background-color: #f8d7da;
+      color: #842029;
+      font-weight: 600;
+    }
+
+    .badge-status-dinas {
+      background-color: #e2d9f3;
+      color: #432874;
+      font-weight: 600;
+    }
+
+    .badge-status-alpha {
+      background-color: #f8d7da;
+      color: #b02a37;
+      font-weight: 600;
+    }
+
+    .badge-status-belum {
+      background-color: #e2e8f0;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .sidebar-admin {
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      min-height: calc(100vh - 76px);
+    }
+
+    .sidebar-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: #475569;
+      font-weight: 500;
+      font-size: 0.92rem;
+      text-align: left;
+      transition: all 0.15s ease;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-nav-btn:hover {
+      background-color: #f1f5f9;
+      color: #0f5132;
+    }
+
+    .sidebar-nav-btn.active {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      font-weight: 600;
+    }
+
+    .bottom-nav-mobile {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+      z-index: 1030;
+    }
+
+    .bottom-nav-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 8px 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: 0.72rem;
+      color: #64748b;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .bottom-nav-btn i {
+      font-size: 1.25rem;
+    }
+
+    .bottom-nav-btn.active {
+      color: #157347;
+      font-weight: 700;
+    }
+
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #198754;
+      display: inline-block;
+      animation: pulseAnim 2s infinite;
+    }
+
+    @keyframes pulseAnim {
+      0% {
+        box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.6);
+      }
+      70% {
+        box-shadow: 0 0 0 8px rgba(25, 135, 84, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(25, 135, 84, 0);
+      }
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: #ffffff !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script type="text/javascript">
+    // ============================================================
+    // SIAP DESA LANDO — Sistem Informasi Absensi Perangkat Desa
+    // Desa Lando, Kec. Terara, Kab. Lombok Timur, NTB
+    // ============================================================
+
+    const DB = {
+      get(key) {
+        try {
+          return JSON.parse(localStorage.getItem('siap_' + key)) || null;
+        } catch {
+          return null;
+        }
+      },
+      set(key, val) {
+        localStorage.setItem('siap_' + key, JSON.stringify(val));
+      },
+      del(key) {
+        localStorage.removeItem('siap_' + key);
+      }
+    };
+
+    // ============================================================
+    // INITIAL DATA SEED & SYNC (DESA LANDO, LOMBOK TIMUR)
+    // ============================================================
+    function seedData() {
+      const defaultSettings = {
+        namaKantor: 'KANTOR DESA LANDO',
+        namaKabupaten: 'Kabupaten Lombok Timur',
+        kecamatan: 'Kecamatan Terara',
+        provinsi: 'Nusa Tenggara Barat',
+        jamMasuk: '08:00',
+        jamPulang: '16:00',
+        toleransiMenit: 15,
+        lat: -8.629524,
+        lng: 116.425128,
+        radiusMeters: 250,
+        geofencingAktif: true
+      };
+
+      const defaultUsers = [
+        { id: 'USR001', nip: '123456789', nik: '123456789', nama: 'BUDI SANTOSO, S.IP', jabatan: 'Kepala Desa', role: 'admin', password: 'admin123', pin: '1234', foto: '', nohp: '081234567890', alamat: 'Dusun Otak Desa, Desa Lando, Kec. Terara', aktif: true },
+        { id: 'USR002', nip: '198003202008012015', nik: '5203050101010002', nama: 'SRI WAHYUNI, S.E', jabatan: 'Sekretaris Desa', role: 'admin', password: 'admin123', pin: '2345', foto: '', nohp: '081234567891', alamat: 'Dusun Lando Daya, Desa Lando, Kec. Terara', aktif: true },
+        { id: 'USR003', nip: '199001152015031005', nik: '5203050101010003', nama: 'AHMAD FAUZI', jabatan: 'Kasi Pemerintahan', role: 'pegawai', password: 'pegawai123', pin: '3456', foto: '', nohp: '081234567892', alamat: 'Dusun Lando Lauk, Desa Lando, Kec. Terara', aktif: true },
+        { id: 'USR004', nip: '198506102010012020', nik: '5203050101010004', nama: 'DEWI RAHAYU, A.Md', jabatan: 'Kaur Keuangan', role: 'pegawai', password: 'pegawai123', pin: '4567', foto: '', nohp: '081234567893', alamat: 'Dusun Montong Beter, Desa Lando, Kec. Terara', aktif: true },
+        { id: 'USR005', nip: '198912252014031008', nik: '5203050101010005', nama: 'SLAMET RIYADI', jabatan: 'Kasi Kesejahteraan', role: 'pegawai', password: 'pegawai123', pin: '5678', foto: '', nohp: '081234567894', alamat: 'Dusun Lando Daya, Desa Lando, Kec. Terara', aktif: true },
+        { id: 'USR006', nip: '199205102018011003', nik: '5203050101010006', nama: 'RINA MARLINA', jabatan: 'Kaur Umum & Perencanaan', role: 'pegawai', password: 'pegawai123', pin: '6789', foto: '', nohp: '081234567895', alamat: 'Dusun Otak Desa, Desa Lando, Kec. Terara', aktif: true },
+        { id: 'USR007', nip: '198708202012031010', nik: '5203050101010007', nama: 'JOKO WIDODO', jabatan: 'Kepala Dusun Lando Daya', role: 'pegawai', password: 'pegawai123', pin: '7890', foto: '', nohp: '081234567896', alamat: 'RT 02 Dusun Lando Daya, Desa Lando', aktif: true },
+        { id: 'USR008', nip: '199308152019012005', nik: '5203050101010008', nama: 'SITI AMINAH', jabatan: 'Kepala Dusun Lando Lauk', role: 'pegawai', password: 'pegawai123', pin: '8901', foto: '', nohp: '081234567897', alamat: 'RT 03 Dusun Lando Lauk, Desa Lando', aktif: true },
+        { id: 'USR009', nip: '198001102005041018', nik: '5203050101010009', nama: 'HENDRA GUNAWAN', jabatan: 'Staf Administrasi', role: 'pegawai', password: 'pegawai123', pin: '9012', foto: '', nohp: '081234567898', alamat: 'Dusun Montong Beter, Desa Lando, Kec. Terara', aktif: true },
+        { id: 'USR010', nip: '199601252020012002', nik: '5203050101010010', nama: 'LESTARI INDAH, S.Pd', jabatan: 'Operator Desa', role: 'admin', password: 'admin123', pin: '0123', foto: '', nohp: '081234567899', alamat: 'Dusun Otak Desa, Desa Lando, Kec. Terara', aktif: true },
+      ];
+
+      // Sinkronisasi otomatis ke Desa Lando & NIK 123456789 jika sebelumnya tersimpan
+      if (DB.get('seeded')) {
+        let curSettings = DB.get('settings') || {};
+        curSettings.namaKantor = 'KANTOR DESA LANDO';
+        curSettings.kecamatan = 'Kecamatan Terara';
+        curSettings.namaKabupaten = 'Kabupaten Lombok Timur';
+        curSettings.provinsi = 'Nusa Tenggara Barat';
+        curSettings.lat = -8.629524;
+        curSettings.lng = 116.425128;
+        curSettings.radiusMeters = curSettings.radiusMeters || 250;
+        DB.set('settings', curSettings);
+
+        let curUsers = DB.get('users');
+        if (curUsers && Array.isArray(curUsers)) {
+          let updated = false;
+          curUsers.forEach(u => {
+            if (u.role === 'admin' && (u.id === 'USR001' || u.jabatan === 'Kepala Desa')) {
+              u.nik = '123456789';
+              u.nip = '123456789';
+              updated = true;
+            }
+          });
+          if (updated) DB.set('users', curUsers);
+        }
+        return;
+      }
+
+      DB.set('users', defaultUsers);
+      DB.set('settings', defaultSettings);
+
+      // Dummy absensi 7 hari ke belakang
+      const absensi = [];
+      const today = new Date();
+      for (let d = 6; d >= 1; d--) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - d);
+        const dateStr = formatDate(date);
+        if (date.getDay() === 0 || date.getDay() === 6) continue;
+
+        defaultUsers.forEach(u => {
+          const rand = Math.random();
+          let status, masuk, pulang, keterangan = '';
+          if (rand < 0.72) {
+            const h = 7;
+            const m = 35 + Math.floor(Math.random() * 24);
+            masuk = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+            pulang = `16:${String(Math.floor(Math.random() * 25)).padStart(2, '0')}`;
+            status = 'hadir';
+          } else if (rand < 0.85) {
+            const m = 12 + Math.floor(Math.random() * 45);
+            masuk = `08:${String(m).padStart(2, '0')}`;
+            pulang = `16:${String(Math.floor(Math.random() * 25)).padStart(2, '0')}`;
+            status = 'terlambat';
+          } else if (rand < 0.90) {
+            status = 'izin';
+            keterangan = 'Urusan keluarga di Mataram';
+          } else if (rand < 0.95) {
+            status = 'sakit';
+            keterangan = 'Istirahat dokter (demam)';
+          } else {
+            status = 'alpha';
+          }
+
+          absensi.push({
+            id: `ABS-${dateStr}-${u.id}`,
+            userId: u.id,
+            tanggal: dateStr,
+            status,
+            jamMasuk: masuk || null,
+            jamPulang: pulang || null,
+            keterangan,
+            lat: defaultSettings.lat + (Math.random() - 0.5) * 0.0008,
+            lng: defaultSettings.lng + (Math.random() - 0.5) * 0.0008,
+            validasiAdmin: ['hadir', 'terlambat', 'alpha'].includes(status) ? 'disetujui' : (rand < 0.5 ? 'disetujui' : 'menunggu'),
+            createdAt: `${dateStr}T${masuk || '08:00'}:00`
+          });
+        });
+      }
+      DB.set('absensi', absensi);
+
+      const pengajuan = [
+        { id: 'PGJ001', userId: 'USR003', tanggal: formatDate(new Date(today.getTime() - 86400000)), jenis: 'izin', keterangan: 'Menghadiri rakor di Kantor Camat Terara', bukti: null, status: 'disetujui', createdAt: new Date().toISOString() },
+        { id: 'PGJ002', userId: 'USR005', tanggal: formatDate(new Date(today.getTime() - 86400000 * 2)), jenis: 'sakit', keterangan: 'Demam dan flu, rawat jalan', bukti: null, status: 'menunggu', createdAt: new Date().toISOString() },
+      ];
+      DB.set('pengajuan', pengajuan);
+
+      DB.set('seeded', true);
+    }
+
+    function formatDate(d) {
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+    function formatTime(d) {
+      return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    }
+    function formatDateTime(isoStr) {
+      if (!isoStr) return '-';
+      const d = new Date(isoStr);
+      return `${formatDate(d)} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    }
+
+    function getUsers() { return DB.get('users') || []; }
+    function getAbsensi() { return DB.get('absensi') || []; }
+    function getPengajuan() { return DB.get('pengajuan') || []; }
+    function getSettings() { return DB.get('settings') || {}; }
+
+    // ============================================================
+    // GEOFENCING (GPS JARAK KANTOR DESA LANDO)
+    // ============================================================
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371000;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function checkGeofence(lat, lng) {
+      const s = getSettings();
+      if (!s.geofencingAktif) return { valid: true, jarak: 0 };
+      const jarak = haversineDistance(lat, lng, s.lat, s.lng);
+      return { valid: jarak <= (s.radiusMeters || 250), jarak: Math.round(jarak) };
+    }
+
+    // ============================================================
+    // APPLICATION STATE
+    // ============================================================
+    let state = {
+      currentUser: null,
+      currentPage: 'login',
+      loginMode: 'password',
+      adminTab: 'dashboard',
+      pegawaiTab: 'absen',
+      absenMode: null, // 'masuk' | 'pulang'
+      userLocation: null,
+      locationError: null,
+      locationLoading: false,
+      modalType: null,
+      modalData: null,
+      filterBulan: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`,
+      searchQuery: '',
+      toast: null,
+      toastTimeout: null,
+      currentTime: new Date(),
+      pengajuanJenis: 'izin',
+      pengajuanKeterangan: '',
+      editUser: null,
+      newUser: { nip: '', nik: '', nama: '', jabatan: '', role: 'pegawai', password: '', pin: '', nohp: '', alamat: '' }
+    };
+
+    function setState(updates) {
+      Object.assign(state, updates);
+      render();
+    }
+
+    function showToast(msg, type = 'success') {
+      if (state.toastTimeout) clearTimeout(state.toastTimeout);
+      const timeout = setTimeout(() => setState({ toast: null, toastTimeout: null }), 3500);
+      setState({ toast: { msg, type }, toastTimeout: timeout });
+    }
+
+    // ============================================================
+    // AUTH LOGIC
+    // ============================================================
+    function login(identifier, credential, mode) {
+      const users = getUsers();
+      let user = null;
+      if (mode === 'password') {
+        user = users.find(u => (u.nip === identifier || u.nik === identifier) && u.password === credential && u.aktif);
+      } else {
+        user = users.find(u => (u.nip === identifier || u.nik === identifier) && u.pin === credential && u.aktif);
+      }
+
+      if (user) {
+        DB.set('currentUser', user.id);
+        setState({
+          currentUser: user,
+          currentPage: user.role === 'admin' ? 'admin' : 'pegawai',
+          adminTab: 'dashboard',
+          pegawaiTab: 'absen'
+        });
+        showToast(`Selamat datang, ${user.nama.split(',')[0]}!`, 'success');
+      } else {
+        showToast('NIK/NIP atau password/PIN salah!', 'danger');
+      }
+    }
+
+    function confirmLogout() {
+      setState({ modalType: 'confirmLogout' });
+    }
+
+    function logout() {
+      DB.del('currentUser');
+      setState({
+        currentUser: null,
+        currentPage: 'login',
+        modalType: null,
+        userLocation: null
+      });
+      showToast('Anda telah berhasil keluar dari sistem.', 'info');
+    }
+
+    // ============================================================
+    // ABSENSI LOGIC (TANPA FOTO - BERBASIS GPS & WAKTU)
+    // ============================================================
+    function getTodayAbsensi(userId) {
+      const today = formatDate(new Date());
+      return getAbsensi().find(a => a.userId === userId && a.tanggal === today);
+    }
+
+    async function promptAbsen(mode) {
+      const user = state.currentUser;
+      const today = formatDate(new Date());
+      const existing = getAbsensi().find(a => a.userId === user.id && a.tanggal === today);
+
+      if (mode === 'masuk' && existing && existing.jamMasuk) {
+        showToast('Anda sudah melakukan absen masuk hari ini!', 'warning');
+        return;
+      }
+      if (mode === 'pulang') {
+        if (!existing || !existing.jamMasuk) {
+          showToast('Anda belum melakukan absen masuk!', 'warning');
+          return;
+        }
+        if (existing.jamPulang) {
+          showToast('Anda sudah melakukan absen pulang hari ini!', 'warning');
+          return;
+        }
+      }
+
+      setState({
+        absenMode: mode,
+        locationLoading: true,
+        locationError: null,
+        modalType: 'konfirmasiAbsen'
+      });
+
+      // Deteksi GPS
+      try {
+        const pos = await new Promise((res, rej) =>
+          navigator.geolocation.getCurrentPosition(res, rej, { timeout: 10000, enableHighAccuracy: true })
+        );
+        const { latitude: lat, longitude: lng } = pos.coords;
+        const geo = checkGeofence(lat, lng);
+        setState({
+          userLocation: { lat, lng, ...geo },
+          locationLoading: false
+        });
+      } catch (err) {
+        const s = getSettings();
+        // Fallback jika GPS ditolak/tidak tersedia di perangkat desktop
+        const fallbackGeo = { lat: s.lat || -8.629524, lng: s.lng || 116.425128, valid: true, jarak: 15 };
+        setState({
+          locationLoading: false,
+          userLocation: fallbackGeo,
+          locationError: 'GPS perangkat tidak aktif / diblokir. Menggunakan koordinat default kantor.'
+        });
+      }
+    }
+
+    function executeAbsen() {
+      const mode = state.absenMode;
+      const user = state.currentUser;
+      const today = formatDate(new Date());
+      const now = new Date();
+      const timeStr = formatTime(now);
+      const settings = getSettings();
+      const loc = state.userLocation || { lat: settings.lat, lng: settings.lng, valid: true, jarak: 0 };
+
+      if (settings.geofencingAktif && loc && !loc.valid) {
+        showToast(`Gagal! Anda berada di luar area Kantor Desa Lando (${loc.jarak}m, maks: ${settings.radiusMeters}m)`, 'danger');
+        return;
+      }
+
+      let absensiList = getAbsensi();
+      const existing = absensiList.find(a => a.userId === user.id && a.tanggal === today);
+
+      if (mode === 'masuk') {
+        const [jH, jM] = settings.jamMasuk.split(':').map(Number);
+        const batasLambat = jH * 60 + jM + (settings.toleransiMenit || 15);
+        const menitSekarang = now.getHours() * 60 + now.getMinutes();
+        const status = menitSekarang > batasLambat ? 'terlambat' : 'hadir';
+
+        const record = {
+          id: `ABS-${today}-${user.id}`,
+          userId: user.id,
+          tanggal: today,
+          status,
+          jamMasuk: timeStr,
+          jamPulang: null,
+          lat: loc.lat,
+          lng: loc.lng,
+          keterangan: '',
+          validasiAdmin: 'disetujui',
+          createdAt: now.toISOString()
+        };
+
+        if (existing) {
+          Object.assign(existing, record);
+        } else {
+          absensiList.push(record);
+        }
+
+        DB.set('absensi', absensiList);
+        showToast(`Absen masuk tercatat pukul ${timeStr} WIB (${status === 'terlambat' ? 'Terlambat' : 'Tepat Waktu'})`, status === 'terlambat' ? 'warning' : 'success');
+      } else {
+        if (existing) {
+          existing.jamPulang = timeStr;
+          DB.set('absensi', absensiList);
+          showToast(`Absen pulang tercatat pukul ${timeStr} WIB. Selamat beristirahat!`, 'success');
+        }
+      }
+
+      setState({
+        modalType: null,
+        absenMode: null,
+        pegawaiTab: 'absen'
+      });
+    }
+
+    function submitPengajuan() {
+      const user = state.currentUser;
+      const ketInput = document.getElementById('pengajuan-ket');
+      const keterangan = ketInput ? ketInput.value.trim() : state.pengajuanKeterangan.trim();
+
+      if (!keterangan) {
+        showToast('Keterangan pengajuan wajib diisi!', 'warning');
+        return;
+      }
+
+      const pgj = getPengajuan();
+      const today = formatDate(new Date());
+      pgj.push({
+        id: `PGJ${Date.now()}`,
+        userId: user.id,
+        tanggal: today,
+        jenis: state.pengajuanJenis,
+        keterangan,
+        bukti: null,
+        status: 'menunggu',
+        createdAt: new Date().toISOString()
+      });
+
+      DB.set('pengajuan', pgj);
+      showToast(`Pengajuan ${state.pengajuanJenis.toUpperCase()} berhasil dikirim ke Admin.`, 'success');
+      setState({ pengajuanKeterangan: '', pegawaiTab: 'riwayat' });
+    }
+
+    function approveReject(pgjId, action) {
+      const list = getPengajuan();
+      const item = list.find(p => p.id === pgjId);
+      if (!item) return;
+      item.status = action;
+
+      if (action === 'disetujui') {
+        let absList = getAbsensi();
+        const existing = absList.find(a => a.userId === item.userId && a.tanggal === item.tanggal);
+        if (existing) {
+          existing.status = item.jenis;
+          existing.keterangan = item.keterangan;
+          existing.validasiAdmin = 'disetujui';
+        } else {
+          absList.push({
+            id: `ABS-${item.tanggal}-${item.userId}`,
+            userId: item.userId,
+            tanggal: item.tanggal,
+            status: item.jenis,
+            jamMasuk: null,
+            jamPulang: null,
+            lat: 0,
+            lng: 0,
+            keterangan: item.keterangan,
+            validasiAdmin: 'disetujui',
+            createdAt: item.createdAt
+          });
+        }
+        DB.set('absensi', absList);
+      }
+
+      DB.set('pengajuan', list);
+      showToast(`Pengajuan ${action === 'disetujui' ? 'disetujui' : 'ditolak'}!`, action === 'disetujui' ? 'success' : 'info');
+      render();
+    }
+
+    function saveUser(userData, isNew) {
+      const users = getUsers();
+      if (isNew) {
+        if (!userData.nip || !userData.nik || !userData.nama || !userData.password) {
+          showToast('Nama, NIK, NIP, dan Password wajib diisi!', 'danger');
+          return;
+        }
+        if (users.find(u => u.nip === userData.nip || u.nik === userData.nik)) {
+          showToast('NIK atau NIP sudah terdaftar!', 'danger');
+          return;
+        }
+        userData.id = `USR${String(Date.now()).slice(-6)}`;
+        userData.aktif = true;
+        userData.foto = '';
+        users.push(userData);
+        showToast(`Pegawai ${userData.nama} berhasil ditambahkan!`, 'success');
+      } else {
+        const idx = users.findIndex(u => u.id === userData.id);
+        if (idx >= 0) {
+          users[idx] = userData;
+          showToast(`Data ${userData.nama} berhasil diperbarui!`, 'success');
+        }
+      }
+      DB.set('users', users);
+      setState({ modalType: null, modalData: null, editUser: null });
+    }
+
+    function deleteUser(userId) {
+      const users = getUsers().filter(u => u.id !== userId);
+      DB.set('users', users);
+      showToast('Data pegawai berhasil dihapus.', 'info');
+      setState({ modalType: null, modalData: null });
+    }
+
+    function saveSettings(s) {
+      DB.set('settings', s);
+      showToast('Pengaturan kantor berhasil disimpan!', 'success');
+      setState({ modalType: null });
+    }
+
+    function exportCSV(bulan) {
+      const absList = getAbsensi().filter(a => a.tanggal.startsWith(bulan));
+      const users = getUsers();
+      const rows = [['No', 'NIK', 'NIP', 'Nama Perangkat', 'Jabatan', 'Tanggal', 'Jam Masuk', 'Jam Pulang', 'Status', 'Keterangan']];
+      absList.forEach((a, i) => {
+        const u = users.find(u => u.id === a.userId);
+        rows.push([i + 1, u?.nik || '', u?.nip || '', u?.nama || '', u?.jabatan || '', a.tanggal, a.jamMasuk || '-', a.jamPulang || '-', a.status.toUpperCase(), a.keterangan || '']);
+      });
+      const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `rekap-absensi-desa-lando-${bulan}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('File CSV rekap absensi berhasil diunduh!', 'success');
+    }
+
+    function printLaporan(bulan) {
+      const settings = getSettings();
+      const absList = getAbsensi().filter(a => a.tanggal.startsWith(bulan));
+      const users = getUsers();
+      const rows = absList.map((a, i) => {
+        const u = users.find(u => u.id === a.userId);
+        const mapBadge = { hadir: 'Hadir', terlambat: 'Terlambat', izin: 'Izin', sakit: 'Sakit', dinas: 'Dinas Luar', alpha: 'Alpha' };
+        return `<tr>
+          <td style="text-align:center">${i + 1}</td>
+          <td>${u?.nik || ''}</td>
+          <td>${u?.nama || ''}</td>
+          <td>${u?.jabatan || ''}</td>
+          <td style="text-align:center">${a.tanggal}</td>
+          <td style="text-align:center">${a.jamMasuk || '-'}</td>
+          <td style="text-align:center">${a.jamPulang || '-'}</td>
+          <td style="text-align:center">${mapBadge[a.status] || a.status}</td>
+          <td>${a.keterangan || '-'}</td>
+        </tr>`;
+      }).join('');
+
+      const [year, month] = bulan.split('-');
+      const monthNames = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+      const win = window.open('', '_blank');
+      win.document.write(`<!DOCTYPE html><html><head><title>Rekap Absensi ${monthNames[+month]} ${year} — Desa Lando</title>
+      <style>
+        body { font-family: 'Times New Roman', serif; padding: 25px; font-size: 13px; color: #111; }
+        .kop { text-align: center; border-bottom: 3px double #000; padding-bottom: 12px; margin-bottom: 18px; }
+        .kop h2 { margin: 2px 0; font-size: 18px; text-transform: uppercase; font-weight: bold; }
+        .kop h3 { margin: 2px 0; font-size: 15px; font-weight: normal; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #333; padding: 6px 8px; }
+        th { background: #f0f0f0; font-weight: bold; }
+        @media print { .btn-print { display: none; } }
+      </style></head><body>
+      <div class="kop">
+        <h2>PEMERINTAH KABUPATEN LOMBOK TIMUR</h2>
+        <h2>KECAMATAN TERARA</h2>
+        <h2>KANTOR DESA LANDO</h2>
+        <h3>Jl. Jurusan Terara - Montong Gading, Desa Lando, Kode Pos 83663</h3>
+      </div>
+      <h3 style="text-align:center;margin:15px 0 5px 0;font-weight:bold;">REKAPITULASI PRESENSI PERANGKAT DESA</h3>
+      <p style="text-align:center;margin:0 0 15px 0;">Periode Bulan: ${monthNames[+month]} ${year}</p>
+      <table>
+        <thead>
+          <tr>
+            <th width="5%">No</th>
+            <th width="15%">NIK</th>
+            <th width="20%">Nama Perangkat</th>
+            <th width="15%">Jabatan</th>
+            <th width="10%">Tanggal</th>
+            <th width="9%">Masuk</th>
+            <th width="9%">Pulang</th>
+            <th width="9%">Status</th>
+            <th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div style="display:flex;justify-content:space-between;margin-top:40px;">
+        <div style="text-align:center;width:250px;">
+          <p>Mengetahui,</p>
+          <p>Sekretaris Desa Lando</p>
+          <br><br><br>
+          <p><strong>SRI WAHYUNI, S.E</strong></p>
+        </div>
+        <div style="text-align:center;width:250px;">
+          <p>Lando, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+          <p>Kepala Desa Lando</p>
+          <br><br><br>
+          <p><strong>BUDI SANTOSO, S.IP</strong></p>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:30px;" class="btn-print">
+        <button onclick="window.print()" style="padding:10px 24px;background:#157347;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px;font-weight:bold;">🖨️ Cetak Dokumen / Simpan PDF</button>
+      </div>
+      </body></html>`);
+      win.document.close();
+    }
+
+    function getTodayStats() {
+      const today = formatDate(new Date());
+      const users = getUsers().filter(u => u.aktif);
+      const absList = getAbsensi().filter(a => a.tanggal === today);
+      const stats = { hadir: 0, terlambat: 0, izin: 0, sakit: 0, dinas: 0, alpha: 0, belum: 0 };
+      users.forEach(u => {
+        const a = absList.find(ab => ab.userId === u.id);
+        if (!a) stats.belum++;
+        else stats[a.status] = (stats[a.status] || 0) + 1;
+      });
+      return { ...stats, total: users.length };
+    }
+
+    function statusBadge(status) {
+      const map = {
+        hadir: ['badge-status-hadir', '✓ Hadir'],
+        terlambat: ['badge-status-terlambat', '⚠ Terlambat'],
+        izin: ['badge-status-izin', '📋 Izin'],
+        sakit: ['badge-status-sakit', '🏥 Sakit'],
+        dinas: ['badge-status-dinas', '🏢 Dinas Luar'],
+        alpha: ['badge-status-alpha', '✗ Alpha'],
+        belum: ['badge-status-belum', '⏳ Belum Presensi'],
+      };
+      const [cls, label] = map[status] || ['badge-status-belum', status];
+      return `<span class="badge ${cls} px-2 py-1 rounded-pill">${label}</span>`;
+    }
+
+    // ============================================================
+    // HEADER COMPONENT (UNIVERSAL)
+    // ============================================================
+    function renderHeader() {
+      const s = getSettings();
+      const now = state.currentTime;
+      const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+      const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+      return `
+      <header class="navbar-desa text-white py-2 px-3 px-md-4 no-print sticky-top">
+        <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-3">
+            <div class="bg-white rounded-circle p-2 d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px;">
+              <i class="bi bi-bank2 text-success fs-4"></i>
+            </div>
+            <div>
+              <div class="fw-bold fs-6 mb-0 text-white">${s.namaKantor || 'KANTOR DESA LANDO'}</div>
+              <div class="text-white-50 small" style="font-size: 0.78rem;">${s.kecamatan || 'Kec. Terara'}, ${s.namaKabupaten || 'Kab. Lombok Timur'}, ${s.provinsi || 'NTB'}</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <div class="text-end text-white">
+              <div id="clock-time" class="fw-bold font-monospace fs-5 leading-none">${timeStr}</div>
+              <div id="clock-date" class="text-white-50" style="font-size: 0.75rem;">${dateStr}</div>
+            </div>
+            ${state.currentUser ? `
+              <div class="border-start border-white-50 ps-3">
+                <button onclick="confirmLogout()" class="btn btn-danger btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center gap-1 shadow-sm font-monospace fw-semibold" title="Keluar dari Akun">
+                  <i class="bi bi-box-arrow-right"></i>
+                  <span class="d-none d-sm-inline">Keluar</span>
+                </button>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      </header>`;
+    }
+
+    // ============================================================
+    // LOGIN PAGE
+    // ============================================================
+    function renderLogin() {
+      return `
+      <div class="min-vh-100 bg-desa-gradient d-flex align-items-center justify-content-center p-3">
+        <div class="card shadow-lg border-0 rounded-4 p-4 p-md-5" style="max-width: 440px; width: 100%;">
+          <div class="text-center mb-4">
+            <div class="bg-success-subtle text-success rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 76px; height: 76px;">
+              <i class="bi bi-shield-check fs-1"></i>
+            </div>
+            <h4 class="fw-bold text-dark mb-1">SIAP DESA LANDO</h4>
+            <p class="text-muted small mb-0">Sistem Informasi Absensi Perangkat Desa Lando</p>
+            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill mt-2">Kecamatan Terara, Lombok Timur</span>
+          </div>
+
+          <div class="btn-group w-100 mb-4" role="group">
+            <button onclick="setState({loginMode:'password'})" class="btn btn-sm ${state.loginMode === 'password' ? 'btn-success fw-bold' : 'btn-outline-secondary'}">
+              <i class="bi bi-key-fill me-1"></i> Password
+            </button>
+            <button onclick="setState({loginMode:'pin'})" class="btn btn-sm ${state.loginMode === 'pin' ? 'btn-success fw-bold' : 'btn-outline-secondary'}">
+              <i class="bi bi-grid-3x3-gap-fill me-1"></i> PIN Cepat
+            </button>
+          </div>
+
+          <form id="login-form">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-secondary">NIK / NIP Perangkat</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person-badge"></i></span>
+                <input id="login-id" type="text" placeholder="Masukkan NIK atau NIP" class="form-control border-start-0" required />
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label small fw-semibold text-secondary">${state.loginMode === 'pin' ? 'PIN (4-6 Angka)' : 'Kata Sandi (Password)'}</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-lock"></i></span>
+                <input id="login-pass" type="password" placeholder="${state.loginMode === 'pin' ? 'Masukkan PIN angka' : 'Masukkan password'}" class="form-control border-start-0" ${state.loginMode === 'pin' ? 'maxlength="6" inputmode="numeric" pattern="[0-9]*"' : ''} required />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success w-100 py-2.5 rounded-3 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2">
+              <span>Masuk ke Sistem</span>
+              <i class="bi bi-arrow-right"></i>
+            </button>
+          </form>
+
+          <div class="mt-4 p-3 bg-light rounded-3 border">
+            <div class="d-flex align-items-center gap-2 mb-2 text-success fw-bold small">
+              <i class="bi bi-info-circle-fill"></i>
+              <span>Akun Uji Coba (Demo):</span>
+            </div>
+            <div class="small text-secondary mb-1">
+              <strong>Admin (Kades):</strong> NIK: <code>123456789</code> | Pass: <code>admin123</code> (PIN: <code>1234</code>)
+            </div>
+            <div class="small text-secondary">
+              <strong>Pegawai (Kasi):</strong> NIP: <code>199001152015031005</code> | Pass: <code>pegawai123</code> (PIN: <code>3456</code>)
+            </div>
+          </div>
+
+          <div class="text-center mt-4 text-muted small">
+            &copy; 2026 Pemerintah Desa Lando, Kec. Terara
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // ============================================================
+    // ADMIN DASHBOARD & PANELS
+    // ============================================================
+    function renderAdmin() {
+      const user = state.currentUser;
+      const navItems = [
+        { id: 'dashboard', icon: 'bi-grid-1x2', label: 'Dashboard' },
+        { id: 'kehadiran', icon: 'bi-calendar-check', label: 'Data Presensi' },
+        { id: 'pegawai', icon: 'bi-people', label: 'Data Perangkat' },
+        { id: 'pengajuan', icon: 'bi-inbox', label: 'Persetujuan Izin', badge: getPengajuan().filter(p => p.status === 'menunggu').length },
+        { id: 'laporan', icon: 'bi-file-earmark-bar-graph', label: 'Laporan & SPJ' },
+        { id: 'pengaturan', icon: 'bi-gear', label: 'Pengaturan Kantor' },
+      ];
+
+      return `
+      <div class="min-vh-100 bg-light">
+        ${renderHeader()}
+
+        <div class="container-fluid">
+          <div class="row">
+            <!-- Sidebar Desktop -->
+            <div class="col-md-3 col-lg-2 d-none d-md-block p-3 sidebar-admin no-print">
+              <div class="card p-3 mb-3 bg-success-subtle border-0">
+                <div class="fw-bold text-success">${user.nama.split(',')[0]}</div>
+                <div class="small text-muted">${user.jabatan}</div>
+                <span class="badge bg-warning text-dark mt-2 w-auto align-self-start fw-bold">LEVEL ADMIN</span>
+              </div>
+              <nav class="nav flex-column mb-4">
+                ${navItems.map(n => `
+                  <button onclick="setState({adminTab:'${n.id}'})" class="sidebar-nav-btn ${state.adminTab === n.id ? 'active' : ''}">
+                    <i class="bi ${n.icon} fs-5"></i>
+                    <span>${n.label}</span>
+                    ${n.badge ? `<span class="badge bg-danger rounded-pill ms-auto">${n.badge}</span>` : ''}
+                  </button>
+                `).join('')}
+              </nav>
+              <div class="pt-3 border-top">
+                <button onclick="confirmLogout()" class="sidebar-nav-btn text-danger">
+                  <i class="bi bi-box-arrow-right fs-5"></i>
+                  <span>Keluar Akun</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Content Area -->
+            <main class="col-md-9 col-lg-10 p-3 p-md-4 pb-5 mb-5 mb-md-0">
+              ${renderAdminContent()}
+            </main>
+          </div>
+        </div>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="bottom-nav-mobile d-flex d-md-none justify-content-around py-1 no-print">
+          ${navItems.slice(0, 5).map(n => `
+            <button onclick="setState({adminTab:'${n.id}'})" class="bottom-nav-btn ${state.adminTab === n.id ? 'active' : ''}">
+              <i class="bi ${n.icon}"></i>
+              <span>${n.label.split(' ')[0]}</span>
+              ${n.badge ? `<span class="badge bg-danger rounded-pill position-absolute" style="top:2px;right:22%;">${n.badge}</span>` : ''}
+            </button>
+          `).join('')}
+          <button onclick="confirmLogout()" class="bottom-nav-btn text-danger">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Keluar</span>
+          </button>
+        </nav>
+      </div>`;
+    }
+
+    function renderAdminContent() {
+      const tabs = {
+        dashboard: renderAdminDashboard,
+        kehadiran: renderAdminKehadiran,
+        pegawai: renderAdminPegawai,
+        pengajuan: renderAdminPengajuan,
+        laporan: renderAdminLaporan,
+        pengaturan: renderAdminPengaturan
+      };
+      return (tabs[state.adminTab] || renderAdminDashboard)();
+    }
+
+    function renderAdminDashboard() {
+      const stats = getTodayStats();
+      const s = getSettings();
+      const users = getUsers().filter(u => u.aktif);
+      const today = formatDate(new Date());
+      const absList = getAbsensi().filter(a => a.tanggal === today);
+
+      const cards = [
+        { label: 'Total Perangkat', val: stats.total, icon: 'bi-people-fill', bg: 'bg-primary-subtle text-primary' },
+        { label: 'Hadir Tepat', val: stats.hadir, icon: 'bi-check-circle-fill', bg: 'bg-success-subtle text-success' },
+        { label: 'Terlambat', val: stats.terlambat, icon: 'bi-exclamation-triangle-fill', bg: 'bg-warning-subtle text-warning' },
+        { label: 'Izin / Sakit', val: stats.izin + stats.sakit, icon: 'bi-clipboard2-pulse-fill', bg: 'bg-info-subtle text-info' },
+        { label: 'Dinas Luar', val: stats.dinas, icon: 'bi-briefcase-fill', bg: 'bg-secondary-subtle text-secondary' },
+        { label: 'Belum Presensi', val: stats.belum + stats.alpha, icon: 'bi-hourglass-split', bg: 'bg-danger-subtle text-danger' },
+      ];
+
+      return `
+      <div>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+          <div>
+            <h4 class="fw-bold mb-1 text-dark">Ringkasan Presensi Hari Ini</h4>
+            <p class="text-muted small mb-0">Kantor Desa Lando, Kec. Terara — Jam Masuk: <strong>${s.jamMasuk} WITA</strong> (Toleransi: +${s.toleransiMenit} mnt)</p>
+          </div>
+          <div class="d-flex align-items-center gap-2 bg-white px-3 py-1.5 rounded-pill border shadow-sm">
+            <span class="pulse-dot"></span>
+            <span class="small fw-semibold text-success">Presensi Aktif</span>
+          </div>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="row g-3 mb-4">
+          ${cards.map(c => `
+            <div class="col-6 col-lg-2 col-md-4">
+              <div class="card p-3 h-100 card-hover">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <div class="stat-card-icon ${c.bg}"><i class="bi ${c.icon}"></i></div>
+                </div>
+                <div class="fs-4 fw-bold text-dark">${c.val}</div>
+                <div class="small text-muted fw-semibold">${c.label}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- Progress Kehadiran -->
+        <div class="card p-4 mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold mb-0 text-dark">Rasio Kehadiran Perangkat Desa Lando Hari Ini</h6>
+            <span class="small fw-bold text-success">${stats.total ? Math.round(((stats.hadir + stats.terlambat) / stats.total) * 100) : 0}% Hadir</span>
+          </div>
+          <div class="progress" style="height: 12px;">
+            <div class="progress-bar bg-success" role="progressbar" style="width: ${stats.total ? (stats.hadir / stats.total) * 100 : 0}%"></div>
+            <div class="progress-bar bg-warning" role="progressbar" style="width: ${stats.total ? (stats.terlambat / stats.total) * 100 : 0}%"></div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: ${stats.total ? ((stats.izin + stats.sakit) / stats.total) * 100 : 0}%"></div>
+            <div class="progress-bar bg-danger" role="progressbar" style="width: ${stats.total ? ((stats.alpha + stats.belum) / stats.total) * 100 : 0}%"></div>
+          </div>
+        </div>
+
+        <!-- Realtime Attendance Table -->
+        <div class="card border-0 shadow-sm overflow-hidden">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h6 class="fw-bold mb-0 text-dark">Daftar Kehadiran Seluruh Perangkat Desa</h6>
+            <button onclick="setState({adminTab:'kehadiran'})" class="btn btn-outline-success btn-sm rounded-pill px-3">Lihat Semua Data</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light text-secondary small text-uppercase">
+                <tr>
+                  <th class="ps-3">Nama Perangkat</th>
+                  <th>Jabatan</th>
+                  <th class="text-center">Status</th>
+                  <th class="text-center">Jam Masuk</th>
+                  <th class="text-center">Jam Pulang</th>
+                  <th>Keterangan</th>
+                </tr>
+              </thead>
+              <tbody class="small">
+                ${users.map(u => {
+                  const a = absList.find(ab => ab.userId === u.id);
+                  return `<tr>
+                    <td class="ps-3">
+                      <div class="fw-bold text-dark">${u.nama}</div>
+                      <div class="text-muted" style="font-size:0.75rem;">NIK: ${u.nik}</div>
+                    </td>
+                    <td><span class="badge bg-light text-dark border">${u.jabatan}</span></td>
+                    <td class="text-center">${statusBadge(a ? a.status : 'belum')}</td>
+                    <td class="text-center font-monospace fw-semibold text-secondary">${a?.jamMasuk || '-'}</td>
+                    <td class="text-center font-monospace fw-semibold text-secondary">${a?.jamPulang || '-'}</td>
+                    <td class="text-muted">${a?.keterangan || '-'}</td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function renderAdminKehadiran() {
+      const users = getUsers().filter(u => u.aktif);
+      const absList = getAbsensi().filter(a => a.tanggal.startsWith(state.filterBulan));
+      const q = state.searchQuery.toLowerCase();
+      const filtered = users.filter(u => u.nama.toLowerCase().includes(q) || u.jabatan.toLowerCase().includes(q) || u.nik.includes(q) || u.nip.includes(q));
+
+      const rows = [];
+      filtered.forEach(u => {
+        const userAbs = absList.filter(a => a.userId === u.id).sort((a, b) => b.tanggal.localeCompare(a.tanggal));
+        userAbs.forEach(a => {
+          rows.push(`<tr>
+            <td class="ps-3">
+              <div class="fw-bold text-dark">${u.nama}</div>
+              <div class="text-muted" style="font-size:0.75rem;">${u.jabatan} • NIK: ${u.nik}</div>
+            </td>
+            <td class="text-center font-monospace">${a.tanggal}</td>
+            <td class="text-center">${statusBadge(a.status)}</td>
+            <td class="text-center font-monospace fw-bold text-success">${a.jamMasuk || '-'}</td>
+            <td class="text-center font-monospace fw-bold text-primary">${a.jamPulang || '-'}</td>
+            <td class="text-muted">${a.keterangan || '-'}</td>
+          </tr>`);
+        });
+      });
+
+      return `
+      <div>
+        <h4 class="fw-bold mb-3 text-dark">Data Log Presensi Perangkat Desa Lando</h4>
+        <div class="card p-3 mb-4">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold text-muted mb-1">Filter Bulan Presensi:</label>
+              <input type="month" value="${state.filterBulan}" onchange="setState({filterBulan:this.value})" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-8">
+              <label class="form-label small fw-semibold text-muted mb-1">Cari Nama / NIK / Jabatan:</label>
+              <div class="input-group input-group-sm">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" placeholder="Ketik kata kunci..." value="${state.searchQuery}" oninput="setState({searchQuery:this.value})" class="form-control" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card border-0 shadow-sm overflow-hidden">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+              <thead class="table-light text-secondary text-uppercase" style="font-size:0.75rem;">
+                <tr>
+                  <th class="ps-3">Perangkat Desa</th>
+                  <th class="text-center">Tanggal</th>
+                  <th class="text-center">Status</th>
+                  <th class="text-center">Jam Masuk</th>
+                  <th class="text-center">Jam Pulang</th>
+                  <th>Keterangan</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows.length > 0 ? rows.join('') : `<tr><td colspan="6" class="text-center py-5 text-muted">Tidak ada rekaman data presensi untuk periode ini.</td></tr>`}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function renderAdminPegawai() {
+      const users = getUsers();
+      const q = state.searchQuery.toLowerCase();
+      const filtered = users.filter(u => u.nama.toLowerCase().includes(q) || u.jabatan.toLowerCase().includes(q) || u.nik.includes(q) || u.nip.includes(q));
+
+      return `
+      <div>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+          <div>
+            <h4 class="fw-bold mb-1 text-dark">Manajemen Perangkat Desa Lando</h4>
+            <p class="text-muted small mb-0">Total terdaftar: <strong>${users.length} perangkat desa</strong></p>
+          </div>
+          <button onclick="setState({modalType:'tambahPegawai'})" class="btn btn-success btn-sm rounded-pill px-3 shadow-sm d-flex align-items-center gap-1.5">
+            <i class="bi bi-person-plus-fill"></i>
+            <span>Tambah Perangkat</span>
+          </button>
+        </div>
+
+        <div class="card p-3 mb-3">
+          <div class="input-group input-group-sm">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" placeholder="Cari nama, NIK, atau jabatan perangkat desa..." value="${state.searchQuery}" oninput="setState({searchQuery:this.value})" class="form-control" />
+          </div>
+        </div>
+
+        <div class="card border-0 shadow-sm overflow-hidden">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+              <thead class="table-light text-secondary text-uppercase" style="font-size:0.75rem;">
+                <tr>
+                  <th class="ps-3">Perangkat Desa</th>
+                  <th>NIK / NIP</th>
+                  <th>Jabatan</th>
+                  <th class="text-center">Akses Role</th>
+                  <th>Kontak HP</th>
+                  <th class="text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${filtered.map(u => `
+                  <tr>
+                    <td class="ps-3">
+                      <div class="fw-bold text-dark">${u.nama}</div>
+                      <div class="text-muted" style="font-size:0.75rem;">${u.alamat || 'Desa Lando'}</div>
+                    </td>
+                    <td>
+                      <div><strong>NIK:</strong> <code>${u.nik}</code></div>
+                      <div class="text-muted" style="font-size:0.75rem;">NIP: ${u.nip || '-'}</div>
+                    </td>
+                    <td><span class="badge bg-light text-dark border">${u.jabatan}</span></td>
+                    <td class="text-center">
+                      <span class="badge ${u.role === 'admin' ? 'bg-warning text-dark' : 'bg-primary'} rounded-pill">${u.role.toUpperCase()}</span>
+                    </td>
+                    <td><i class="bi bi-telephone text-muted me-1"></i>${u.nohp || '-'}</td>
+                    <td class="text-center">
+                      <div class="btn-group btn-group-sm">
+                        <button onclick="openEditUser('${u.id}')" class="btn btn-outline-primary" title="Ubah Data"><i class="bi bi-pencil-square"></i></button>
+                        <button onclick="confirmDeleteUser('${u.id}')" class="btn btn-outline-danger" title="Hapus"><i class="bi bi-trash"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function renderAdminPengajuan() {
+      const list = getPengajuan();
+      const users = getUsers();
+      const menunggu = list.filter(p => p.status === 'menunggu');
+      const diproses = list.filter(p => p.status !== 'menunggu');
+
+      const renderItem = p => {
+        const u = users.find(u => u.id === p.userId);
+        return `
+        <div class="card p-3 mb-3 border">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+            <div class="d-flex align-items-center gap-3">
+              <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width:40px;height:40px;">
+                ${u?.nama.charAt(0) || '?'}
+              </div>
+              <div>
+                <div class="fw-bold text-dark">${u?.nama || 'Perangkat Desa'}</div>
+                <div class="small text-muted">${u?.jabatan || ''} • Tanggal: <strong>${p.tanggal}</strong></div>
+              </div>
+            </div>
+            <div>
+              ${statusBadge(p.jenis)}
+              <span class="badge ${p.status === 'disetujui' ? 'bg-success' : p.status === 'ditolak' ? 'bg-danger' : 'bg-warning text-dark'} ms-1">${p.status.toUpperCase()}</span>
+            </div>
+          </div>
+          <p class="bg-light p-2.5 rounded-2 small text-secondary mb-2 border">${p.keterangan}</p>
+          ${p.status === 'menunggu' ? `
+            <div class="d-flex gap-2">
+              <button onclick="approveReject('${p.id}','disetujui')" class="btn btn-success btn-sm rounded-pill px-3"><i class="bi bi-check-lg me-1"></i>Setujui Pengajuan</button>
+              <button onclick="approveReject('${p.id}','ditolak')" class="btn btn-outline-danger btn-sm rounded-pill px-3"><i class="bi bi-x-lg me-1"></i>Tolak</button>
+            </div>
+          ` : ''}
+        </div>`;
+      };
+
+      return `
+      <div>
+        <h4 class="fw-bold mb-3 text-dark">Validasi Pengajuan Izin & Sakit</h4>
+        <div class="mb-4">
+          <h6 class="fw-bold text-warning mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-clock-history"></i>
+            <span>Menunggu Verifikasi (${menunggu.length})</span>
+          </h6>
+          ${menunggu.length > 0 ? menunggu.map(renderItem).join('') : `<div class="card p-4 text-center text-muted border-dashed">Belum ada pengajuan baru yang menunggu validasi.</div>`}
+        </div>
+
+        ${diproses.length > 0 ? `
+          <div>
+            <h6 class="fw-bold text-secondary mb-3">Riwayat Pengajuan Sebelumnya</h6>
+            ${diproses.map(renderItem).join('')}
+          </div>
+        ` : ''}
+      </div>`;
+    }
+
+    function renderAdminLaporan() {
+      const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+      const now = new Date();
+      const availableMonths = [];
+      for (let i = 0; i < 6; i++) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        availableMonths.push({
+          value: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`,
+          label: `${months[d.getMonth()]} ${d.getFullYear()}`
+        });
+      }
+
+      const absList = getAbsensi().filter(a => a.tanggal.startsWith(state.filterBulan));
+      const users = getUsers().filter(u => u.aktif);
+
+      const userStats = users.map(u => {
+        const uList = absList.filter(a => a.userId === u.id);
+        return {
+          user: u,
+          hadir: uList.filter(a => a.status === 'hadir').length,
+          terlambat: uList.filter(a => a.status === 'terlambat').length,
+          izin: uList.filter(a => a.status === 'izin').length,
+          sakit: uList.filter(a => a.status === 'sakit').length,
+          dinas: uList.filter(a => a.status === 'dinas').length,
+          alpha: uList.filter(a => a.status === 'alpha').length,
+          total: uList.length
+        };
+      });
+
+      return `
+      <div>
+        <h4 class="fw-bold mb-3 text-dark">Rekapitulasi & Ekspor Laporan SPJ</h4>
+        <div class="card p-3 mb-4">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-2">
+              <label class="small fw-bold text-secondary">Periode Bulan:</label>
+              <select onchange="setState({filterBulan:this.value})" class="form-select form-select-sm w-auto">
+                ${availableMonths.map(m => `<option value="${m.value}" ${state.filterBulan === m.value ? 'selected' : ''}>${m.label}</option>`).join('')}
+              </select>
+            </div>
+            <div class="d-flex gap-2">
+              <button onclick="exportCSV('${state.filterBulan}')" class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-sm">
+                <i class="bi bi-file-earmark-excel me-1"></i> Unduh CSV / Excel
+              </button>
+              <button onclick="printLaporan('${state.filterBulan}')" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
+                <i class="bi bi-printer me-1"></i> Cetak Dokumen SPJ (PDF)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card border-0 shadow-sm overflow-hidden">
+          <div class="card-header bg-white py-3">
+            <h6 class="fw-bold mb-0 text-dark">Ringkasan Kehadiran Bulanan Perangkat Desa Lando</h6>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle mb-0 small text-center">
+              <thead class="table-light">
+                <tr>
+                  <th class="text-start ps-3">Nama Perangkat</th>
+                  <th>Jabatan</th>
+                  <th class="text-success">Hadir</th>
+                  <th class="text-warning">Terlambat</th>
+                  <th class="text-primary">Izin</th>
+                  <th class="text-danger">Sakit</th>
+                  <th class="text-secondary">Dinas</th>
+                  <th class="text-danger">Alpha</th>
+                  <th class="bg-light">Total Hari</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${userStats.map(s => `
+                  <tr>
+                    <td class="text-start ps-3 fw-bold text-dark">${s.user.nama}</td>
+                    <td class="text-start">${s.user.jabatan}</td>
+                    <td class="fw-bold text-success">${s.hadir}</td>
+                    <td class="fw-bold text-warning">${s.terlambat}</td>
+                    <td class="fw-bold text-primary">${s.izin}</td>
+                    <td class="fw-bold text-danger">${s.sakit}</td>
+                    <td class="fw-bold text-secondary">${s.dinas}</td>
+                    <td class="fw-bold text-danger">${s.alpha}</td>
+                    <td class="fw-bold bg-light">${s.total}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function renderAdminPengaturan() {
+      const s = getSettings();
+      return `
+      <div>
+        <h4 class="fw-bold mb-3 text-dark">Pengaturan Kantor Desa & Kebijakan Absensi</h4>
+        <div class="card p-4">
+          <form id="settings-form">
+            <h6 class="fw-bold text-success border-bottom pb-2 mb-3"><i class="bi bi-buildings me-2"></i>Identitas Kantor Desa</h6>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-secondary">Nama Kantor Desa</label>
+                <input type="text" name="namaKantor" value="${s.namaKantor || 'KANTOR DESA LANDO'}" class="form-control" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-secondary">Kabupaten</label>
+                <input type="text" name="namaKabupaten" value="${s.namaKabupaten || 'Kabupaten Lombok Timur'}" class="form-control" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-secondary">Kecamatan</label>
+                <input type="text" name="kecamatan" value="${s.kecamatan || 'Kecamatan Terara'}" class="form-control" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-secondary">Provinsi</label>
+                <input type="text" name="provinsi" value="${s.provinsi || 'Nusa Tenggara Barat'}" class="form-control" required />
+              </div>
+            </div>
+
+            <h6 class="fw-bold text-success border-bottom pb-2 mb-3"><i class="bi bi-clock-history me-2"></i>Jadwal Jam Kerja & Toleransi</h6>
+            <div class="row g-3 mb-4">
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold text-secondary">Jam Masuk Kantor</label>
+                <input type="time" name="jamMasuk" value="${s.jamMasuk || '08:00'}" class="form-control" required />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold text-secondary">Jam Pulang Kantor</label>
+                <input type="time" name="jamPulang" value="${s.jamPulang || '16:00'}" class="form-control" required />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold text-secondary">Toleransi Keterlambatan (menit)</label>
+                <input type="number" name="toleransiMenit" value="${s.toleransiMenit || 15}" min="0" max="60" class="form-control" required />
+              </div>
+            </div>
+
+            <h6 class="fw-bold text-success border-bottom pb-2 mb-3"><i class="bi bi-geo-alt-fill me-2"></i>Titik Koordinat GPS Kantor Desa Lando</h6>
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" name="geofencingAktif" id="geoSwitch" ${s.geofencingAktif ? 'checked' : ''} />
+              <label class="form-check-label small fw-bold text-dark" for="geoSwitch">Aktifkan Validasi Geofencing GPS (Harus berada di area Kantor Desa)</label>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold text-secondary">Latitude Kantor</label>
+                <input type="number" step="0.000001" name="lat" value="${s.lat || -8.629524}" class="form-control" required />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold text-secondary">Longitude Kantor</label>
+                <input type="number" step="0.000001" name="lng" value="${s.lng || 116.425128}" class="form-control" required />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold text-secondary">Radius Toleransi (Meter)</label>
+                <input type="number" name="radiusMeters" value="${s.radiusMeters || 250}" min="50" max="1000" class="form-control" required />
+              </div>
+            </div>
+            <div class="alert alert-info py-2 small mb-4">
+              <i class="bi bi-info-circle me-1"></i> Titik koordinat default diatur untuk Kantor Desa Lando, Kecamatan Terara, Lombok Timur (-8.629524, 116.425128).
+            </div>
+
+            <button type="submit" class="btn btn-success px-4 py-2 fw-bold rounded-pill">
+              <i class="bi bi-floppy me-1"></i> Simpan Perubahan Pengaturan
+            </button>
+          </form>
+        </div>
+      </div>`;
+    }
+
+    // ============================================================
+    // PEGAWAI DASHBOARD & PANELS (TANPA FITUR FOTO)
+    // ============================================================
+    function renderPegawai() {
+      const user = state.currentUser;
+      const navItems = [
+        { id: 'absen', icon: 'bi-fingerprint', label: 'Presensi' },
+        { id: 'pengajuan', icon: 'bi-file-earmark-plus', label: 'Ajukan Izin' },
+        { id: 'riwayat', icon: 'bi-clock-history', label: 'Riwayat' },
+        { id: 'profil', icon: 'bi-person', label: 'Profil' },
+      ];
+
+      return `
+      <div class="min-vh-100 bg-light pb-5 mb-5 mb-md-0">
+        ${renderHeader()}
+
+        <main class="container py-4" style="max-width: 760px;">
+          <!-- Top Greeting Card -->
+          <div class="card bg-desa-gradient border-0 text-white p-4 mb-4 rounded-4 shadow">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <div>
+                <span class="badge bg-white text-success px-2.5 py-1 rounded-pill fw-bold mb-2">Perangkat Desa Lando</span>
+                <h4 class="fw-bold mb-0 text-white">${user.nama}</h4>
+                <div class="text-white-50 small">${user.jabatan} • NIK: <strong>${user.nik}</strong></div>
+              </div>
+              <div class="text-end">
+                <div id="inline-clock-time" class="fs-2 font-monospace fw-bold leading-none text-white"></div>
+                <div id="inline-clock-date" class="small text-white-50"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nav Tabs (Bootstrap Nav) -->
+          <ul class="nav nav-pills nav-fill bg-white p-1 rounded-4 shadow-sm mb-4 border d-none d-sm-flex">
+            ${navItems.map(n => `
+              <li class="nav-item">
+                <button onclick="setState({pegawaiTab:'${n.id}'})" class="nav-link rounded-3 py-2 ${state.pegawaiTab === n.id ? 'active bg-success fw-bold' : 'text-secondary'}">
+                  <i class="bi ${n.icon} me-1"></i>${n.label}
+                </button>
+              </li>
+            `).join('')}
+          </ul>
+
+          ${renderPegawaiContent()}
+        </main>
+
+        <!-- Mobile Bottom Bar for Pegawai -->
+        <nav class="bottom-nav-mobile d-flex d-sm-none justify-content-around py-1 no-print">
+          ${navItems.map(n => `
+            <button onclick="setState({pegawaiTab:'${n.id}'})" class="bottom-nav-btn ${state.pegawaiTab === n.id ? 'active' : ''}">
+              <i class="bi ${n.icon}"></i>
+              <span>${n.label}</span>
+            </button>
+          `).join('')}
+          <button onclick="confirmLogout()" class="bottom-nav-btn text-danger">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Keluar</span>
+          </button>
+        </nav>
+      </div>`;
+    }
+
+    function renderPegawaiContent() {
+      const tabs = {
+        absen: renderPegawaiAbsen,
+        pengajuan: renderPegawaiPengajuan,
+        riwayat: renderPegawaiRiwayat,
+        profil: renderPegawaiProfil
+      };
+      return (tabs[state.pegawaiTab] || renderPegawaiAbsen)();
+    }
+
+    function renderPegawaiAbsen() {
+      const user = state.currentUser;
+      const s = getSettings();
+      const todayAbs = getTodayAbsensi(user.id);
+      const sudahMasuk = !!todayAbs?.jamMasuk;
+      const sudahPulang = !!todayAbs?.jamPulang;
+
+      return `
+      <div>
+        <!-- Status Card Hari Ini -->
+        <div class="card p-3 mb-4 border-0 shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0 text-dark">Status Kehadiran Anda Hari Ini</h6>
+            <span class="small text-muted font-monospace">${formatDate(new Date())}</span>
+          </div>
+          <div class="row g-3 text-center">
+            <div class="col-6">
+              <div class="p-3 rounded-3 border ${sudahMasuk ? 'bg-success-subtle border-success' : 'bg-light'}">
+                <div class="small text-muted mb-1">Presensi Masuk</div>
+                <div class="fs-4 fw-bold font-monospace text-dark">${todayAbs?.jamMasuk || '--:--'}</div>
+                <div class="mt-1">${statusBadge(todayAbs ? todayAbs.status : 'belum')}</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 rounded-3 border ${sudahPulang ? 'bg-primary-subtle border-primary' : 'bg-light'}">
+                <div class="small text-muted mb-1">Presensi Pulang</div>
+                <div class="fs-4 fw-bold font-monospace text-dark">${todayAbs?.jamPulang || '--:--'}</div>
+                <div class="small text-muted mt-1">Target: ${s.jamPulang} WITA</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tombol Aksi Utama (Tanpa Foto) -->
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-md-6">
+            <div class="card p-4 h-100 text-center border-success card-hover ${sudahMasuk ? 'bg-light opacity-75' : 'bg-white shadow-sm'}">
+              <div class="fs-1 text-success mb-2"><i class="bi bi-box-arrow-in-right"></i></div>
+              <h5 class="fw-bold text-dark mb-1">Presensi Masuk</h5>
+              <p class="text-muted small mb-3">Jam Masuk: ${s.jamMasuk} WITA (+${s.toleransiMenit} mnt toleransi)</p>
+              <button onclick="promptAbsen('masuk')" ${sudahMasuk ? 'disabled' : ''} class="btn btn-success btn-lg rounded-pill fw-bold py-2.5 shadow-sm">
+                ${sudahMasuk ? '<i class="bi bi-check-circle me-1"></i>Sudah Masuk' : '<i class="bi bi-geo-alt-fill me-1"></i>Absen Masuk Sekarang'}
+              </button>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <div class="card p-4 h-100 text-center border-primary card-hover ${!sudahMasuk || sudahPulang ? 'bg-light opacity-75' : 'bg-white shadow-sm'}">
+              <div class="fs-1 text-primary mb-2"><i class="bi bi-box-arrow-right"></i></div>
+              <h5 class="fw-bold text-dark mb-1">Presensi Pulang</h5>
+              <p class="text-muted small mb-3">Jam Pulang: ${s.jamPulang} WITA</p>
+              <button onclick="promptAbsen('pulang')" ${!sudahMasuk || sudahPulang ? 'disabled' : ''} class="btn btn-primary btn-lg rounded-pill fw-bold py-2.5 shadow-sm">
+                ${sudahPulang ? '<i class="bi bi-check-circle me-1"></i>Sudah Pulang' : '<i class="bi bi-geo-alt-fill me-1"></i>Absen Pulang Sekarang'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Geofencing & Kebijakan Info -->
+        <div class="card p-3 bg-light border">
+          <div class="d-flex align-items-center gap-3">
+            <div class="fs-3 text-success"><i class="bi bi-geo-fill"></i></div>
+            <div>
+              <div class="fw-bold small text-dark">Sistem Lokasi Geofencing Kantor Desa Lando</div>
+              <div class="text-muted" style="font-size: 0.8rem;">
+                Presensi akan mencatat koordinat GPS Anda secara otomatis saat tombol ditekan. Pastikan Anda berada dalam radius ${s.radiusMeters || 250} meter dari Kantor Desa Lando.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function renderPegawaiPengajuan() {
+      const user = state.currentUser;
+      const myPengajuan = getPengajuan().filter(p => p.userId === user.id).reverse();
+
+      return `
+      <div>
+        <div class="card p-4 mb-4 border-0 shadow-sm">
+          <h5 class="fw-bold text-dark mb-3">Formulir Pengajuan Izin / Sakit / Dinas Luar</h5>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-secondary">Jenis Pengajuan</label>
+            <div class="btn-group w-100" role="group">
+              ${['izin', 'sakit', 'dinas'].map(j => `
+                <button type="button" onclick="setState({pengajuanJenis:'${j}'})" class="btn btn-sm ${state.pengajuanJenis === j ? 'btn-success fw-bold' : 'btn-outline-secondary'}">
+                  ${j === 'izin' ? '📋 Izin Keperluan' : j === 'sakit' ? '🏥 Sakit' : '🏢 Dinas Luar'}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-secondary">Keterangan / Alasan Lengkap</label>
+            <textarea id="pengajuan-ket" class="form-control" rows="3" placeholder="Tuliskan keterangan detail pengajuan Anda...">${state.pengajuanKeterangan}</textarea>
+          </div>
+
+          <button onclick="submitPengajuan()" class="btn btn-success rounded-pill fw-bold w-100 py-2">
+            <i class="bi bi-send-fill me-1"></i> Kirim Pengajuan ke Kepala Desa / Sekdes
+          </button>
+        </div>
+
+        <div class="card border-0 shadow-sm p-3">
+          <h6 class="fw-bold text-dark mb-3">Daftar Pengajuan Saya</h6>
+          ${myPengajuan.length === 0 ? `<p class="text-muted small text-center py-4">Belum ada riwayat pengajuan izin/sakit.</p>` : `
+            <div class="list-group list-group-flush">
+              ${myPengajuan.map(p => `
+                <div class="list-group-item px-0 py-2.5">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <div>
+                      ${statusBadge(p.jenis)}
+                      <span class="small fw-bold text-dark ms-2">${p.tanggal}</span>
+                    </div>
+                    <span class="badge ${p.status === 'disetujui' ? 'bg-success' : p.status === 'ditolak' ? 'bg-danger' : 'bg-warning text-dark'} rounded-pill">${p.status.toUpperCase()}</span>
+                  </div>
+                  <div class="small text-secondary">${p.keterangan}</div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+      </div>`;
+    }
+
+    function renderPegawaiRiwayat() {
+      const user = state.currentUser;
+      const history = getUserAbsensiHistory(user.id, state.filterBulan);
+
+      const stats = {
+        hadir: history.filter(a => a.status === 'hadir').length,
+        terlambat: history.filter(a => a.status === 'terlambat').length,
+        izin: history.filter(a => a.status === 'izin').length,
+        sakit: history.filter(a => a.status === 'sakit').length,
+        alpha: history.filter(a => a.status === 'alpha').length,
+      };
+
+      return `
+      <div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold text-dark mb-0">Riwayat Presensi Saya</h5>
+          <input type="month" value="${state.filterBulan}" onchange="setState({filterBulan:this.value})" class="form-control form-control-sm w-auto" />
+        </div>
+
+        <div class="row g-2 mb-3 text-center">
+          <div class="col"><div class="card p-2 bg-success-subtle text-success border-0"><div class="fs-5 fw-bold">${stats.hadir}</div><div style="font-size:0.7rem;">Hadir</div></div></div>
+          <div class="col"><div class="card p-2 bg-warning-subtle text-warning border-0"><div class="fs-5 fw-bold">${stats.terlambat}</div><div style="font-size:0.7rem;">Telat</div></div></div>
+          <div class="col"><div class="card p-2 bg-info-subtle text-info border-0"><div class="fs-5 fw-bold">${stats.izin}</div><div style="font-size:0.7rem;">Izin</div></div></div>
+          <div class="col"><div class="card p-2 bg-danger-subtle text-danger border-0"><div class="fs-5 fw-bold">${stats.sakit}</div><div style="font-size:0.7rem;">Sakit</div></div></div>
+          <div class="col"><div class="card p-2 bg-secondary-subtle text-secondary border-0"><div class="fs-5 fw-bold">${stats.alpha}</div><div style="font-size:0.7rem;">Alpha</div></div></div>
+        </div>
+
+        <div class="card border-0 shadow-sm overflow-hidden">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+              <thead class="table-light text-secondary text-uppercase" style="font-size:0.72rem;">
+                <tr>
+                  <th class="ps-3">Tanggal</th>
+                  <th class="text-center">Jam Masuk</th>
+                  <th class="text-center">Jam Pulang</th>
+                  <th class="text-center">Status</th>
+                  <th>Keterangan</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${history.length > 0 ? history.map(a => `
+                  <tr>
+                    <td class="ps-3 fw-bold text-dark">${a.tanggal}</td>
+                    <td class="text-center font-monospace fw-semibold text-success">${a.jamMasuk || '-'}</td>
+                    <td class="text-center font-monospace fw-semibold text-primary">${a.jamPulang || '-'}</td>
+                    <td class="text-center">${statusBadge(a.status)}</td>
+                    <td class="text-muted">${a.keterangan || '-'}</td>
+                  </tr>
+                `).join('') : `<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada catatan presensi pada bulan ini.</td></tr>`}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function renderPegawaiProfil() {
+      const user = state.currentUser;
+      return `
+      <div>
+        <div class="card border-0 shadow-sm overflow-hidden mb-4">
+          <div class="bg-desa-gradient p-4 text-center text-white">
+            <div class="bg-white text-success rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 shadow" style="width:72px;height:72px;">
+              <i class="bi bi-person-fill fs-1"></i>
+            </div>
+            <h5 class="fw-bold mb-0 text-white">${user.nama}</h5>
+            <div class="text-white-50 small">${user.jabatan} — Kantor Desa Lando</div>
+            <span class="badge bg-warning text-dark mt-2">${user.role.toUpperCase()}</span>
+          </div>
+
+          <div class="card-body p-4">
+            <div class="list-group list-group-flush small">
+              <div class="list-group-item d-flex justify-content-between px-0 py-2">
+                <span class="text-muted">Nomor Induk Kependudukan (NIK)</span>
+                <span class="fw-bold text-dark font-monospace">${user.nik}</span>
+              </div>
+              <div class="list-group-item d-flex justify-content-between px-0 py-2">
+                <span class="text-muted">NIP / Nomor Pegawai</span>
+                <span class="fw-bold text-dark font-monospace">${user.nip || '-'}</span>
+              </div>
+              <div class="list-group-item d-flex justify-content-between px-0 py-2">
+                <span class="text-muted">Nomor WhatsApp / HP</span>
+                <span class="fw-bold text-dark">${user.nohp || '-'}</span>
+              </div>
+              <div class="list-group-item d-flex justify-content-between px-0 py-2">
+                <span class="text-muted">Alamat Domisili</span>
+                <span class="fw-bold text-dark">${user.alamat || 'Desa Lando, Kec. Terara'}</span>
+              </div>
+              <div class="list-group-item d-flex justify-content-between px-0 py-2">
+                <span class="text-muted">Status Kepegawaian</span>
+                <span class="badge bg-success-subtle text-success">Aktif Bekerja</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="confirmLogout()" class="btn btn-outline-danger w-100 py-2.5 rounded-pill fw-bold">
+          <i class="bi bi-box-arrow-right me-1"></i> Keluar dari Akun
+        </button>
+      </div>`;
+    }
+
+    function getUserAbsensiHistory(userId, bulan) {
+      return getAbsensi().filter(a => a.userId === userId && a.tanggal.startsWith(bulan)).sort((a, b) => b.tanggal.localeCompare(a.tanggal));
+    }
+
+    // ============================================================
+    // MODAL DIALOGS
+    // ============================================================
+    function renderModal() {
+      let content = '';
+
+      // 1. Modal Konfirmasi Absen (GPS Geofencing - Tanpa Kamera)
+      if (state.modalType === 'konfirmasiAbsen') {
+        const mode = state.absenMode;
+        const s = getSettings();
+        const loc = state.userLocation;
+        const isLoading = state.locationLoading;
+
+        content = `
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold text-dark">
+            <i class="bi ${mode === 'masuk' ? 'bi-box-arrow-in-right text-success' : 'bi-box-arrow-right text-primary'} me-2"></i>
+            Konfirmasi Absen ${mode === 'masuk' ? 'Masuk' : 'Pulang'}
+          </h5>
+          <button type="button" class="btn-close" onclick="setState({modalType:null})"></button>
+        </div>
+        <div class="modal-body py-4 text-center">
+          <div class="fs-1 text-success mb-2"><i class="bi bi-geo-alt-fill"></i></div>
+          <h6 class="fw-bold text-dark mb-1">Verifikasi Lokasi & Jam Presensi</h6>
+          <p class="text-muted small mb-3">Kantor Desa Lando, Kec. Terara, Kab. Lombok Timur</p>
+
+          ${isLoading ? `
+            <div class="spinner-border text-success my-3" role="status"></div>
+            <div class="small text-muted">Mendeteksi koordinat GPS perangkat Anda...</div>
+          ` : `
+            <div class="p-3 rounded-3 mb-3 text-start small border ${loc && loc.valid ? 'bg-success-subtle border-success text-success-emphasis' : 'bg-danger-subtle border-danger text-danger-emphasis'}">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi ${loc && loc.valid ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger'} fs-5"></i>
+                <strong>${loc && loc.valid ? 'Lokasi Valid — Berada di Area Kantor Desa Lando' : 'Lokasi di Luar Radius Kantor!'}</strong>
+              </div>
+              <div>Jarak Anda: <strong>${loc ? loc.jarak : 0} meter</strong> (Maksimal: ${s.radiusMeters || 250} meter)</div>
+              <div class="text-muted mt-1" style="font-size:0.75rem;">Koordinat: ${loc ? `${loc.lat.toFixed(6)}, ${loc.lng.toFixed(6)}` : '-'}</div>
+            </div>
+            ${state.locationError ? `<div class="small text-warning mb-2">${state.locationError}</div>` : ''}
+          `}
+
+          <div class="d-flex justify-content-center gap-2 mt-4">
+            <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" onclick="setState({modalType:null})">Batal</button>
+            <button type="button" class="btn ${mode === 'masuk' ? 'btn-success' : 'btn-primary'} px-4 rounded-pill fw-bold" onclick="executeAbsen()" ${isLoading ? 'disabled' : ''}>
+              <i class="bi bi-check2-circle me-1"></i> Simpan Presensi Sekarang
+            </button>
+          </div>
+        </div>`;
+      }
+
+      // 2. Modal Konfirmasi Logout
+      else if (state.modalType === 'confirmLogout') {
+        const u = state.currentUser;
+        content = `
+        <div class="modal-body p-4 text-center">
+          <div class="text-danger fs-1 mb-2"><i class="bi bi-exclamation-triangle-fill"></i></div>
+          <h5 class="fw-bold text-dark mb-2">Konfirmasi Keluar Akun</h5>
+          <p class="text-muted small mb-4">Apakah Anda yakin ingin keluar dari sistem SIAP Desa Lando atas nama <strong>${u ? u.nama : ''}</strong>?</p>
+          <div class="d-flex justify-content-center gap-2">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="setState({modalType:null})">Batal</button>
+            <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold" onclick="logout()">Ya, Keluar Sekarang</button>
+          </div>
+        </div>`;
+      }
+
+      // 3. Modal Tambah / Edit Pegawai
+      else if (state.modalType === 'tambahPegawai' || state.modalType === 'editPegawai') {
+        const isNew = state.modalType === 'tambahPegawai';
+        const u = isNew ? state.newUser : (state.editUser || {});
+        const jabatans = ['Kepala Desa', 'Sekretaris Desa', 'Kasi Pemerintahan', 'Kasi Kesejahteraan', 'Kasi Pelayanan', 'Kaur Keuangan', 'Kaur Umum & Perencanaan', 'Kepala Dusun Lando Daya', 'Kepala Dusun Lando Lauk', 'Kepala Dusun Otak Desa', 'Staf Administrasi', 'Operator Desa'];
+
+        content = `
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold text-dark">${isNew ? '<i class="bi bi-person-plus-fill text-success me-2"></i>Tambah Perangkat Desa' : '<i class="bi bi-pencil-square text-primary me-2"></i>Edit Data Perangkat'}</h5>
+          <button type="button" class="btn-close" onclick="setState({modalType:null,editUser:null})"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="user-form">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-secondary">Nama Lengkap & Gelar *</label>
+              <input id="u-nama" type="text" value="${u.nama || ''}" class="form-control" required />
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-secondary">NIK (16 Digit) *</label>
+                <input id="u-nik" type="text" value="${u.nik || ''}" class="form-control" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-secondary">NIP (atau NIK jika non-PNS) *</label>
+                <input id="u-nip" type="text" value="${u.nip || ''}" class="form-control" required />
+              </div>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-secondary">Jabatan Perangkat *</label>
+                <select id="u-jabatan" class="form-select">
+                  ${jabatans.map(j => `<option value="${j}" ${u.jabatan === j ? 'selected' : ''}>${j}</option>`).join('')}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-secondary">Hak Akses Role *</label>
+                <select id="u-role" class="form-select">
+                  <option value="pegawai" ${u.role !== 'admin' ? 'selected' : ''}>Pegawai / Perangkat Desa</option>
+                  <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin (Kades/Sekdes/Operator)</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-secondary">Kata Sandi (Password) ${isNew ? '*' : ''}</label>
+                <input id="u-password" type="password" placeholder="${isNew ? 'Password' : 'Kosongkan jika tidak diubah'}" class="form-control" ${isNew ? 'required' : ''} />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold text-secondary">PIN Cepat (4-6 Angka)</label>
+                <input id="u-pin" type="text" maxlength="6" value="${u.pin || ''}" class="form-control" placeholder="Contoh: 1234" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-secondary">Nomor WhatsApp / HP</label>
+              <input id="u-nohp" type="text" value="${u.nohp || ''}" class="form-control" placeholder="08..." />
+            </div>
+            <div class="mb-4">
+              <label class="form-label small fw-semibold text-secondary">Alamat Dusun / Domisili</label>
+              <input id="u-alamat" type="text" value="${u.alamat || 'Desa Lando, Kec. Terara'}" class="form-control" />
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-outline-secondary rounded-pill px-3" onclick="setState({modalType:null,editUser:null})">Batal</button>
+              <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold">${isNew ? 'Tambah Perangkat' : 'Simpan Perubahan'}</button>
+            </div>
+          </form>
+        </div>`;
+      }
+
+      // 4. Modal Hapus User
+      else if (state.modalType === 'deleteUser') {
+        const u = state.modalData;
+        content = `
+        <div class="modal-body p-4 text-center">
+          <div class="text-danger fs-1 mb-2"><i class="bi bi-trash-fill"></i></div>
+          <h5 class="fw-bold text-dark mb-2">Hapus Data Perangkat?</h5>
+          <p class="text-muted small mb-4">Apakah Anda yakin ingin menghapus data perangkat <strong>${u ? u.nama : ''}</strong>? Tindakan ini tidak dapat dibatalkan.</p>
+          <div class="d-flex justify-content-center gap-2">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="setState({modalType:null})">Batal</button>
+            <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold" onclick="deleteUser('${u.id}')">Hapus Data</button>
+          </div>
+        </div>`;
+      }
+
+      return `
+      <div class="modal d-block" tabindex="-1" style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1050;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
+          <div class="modal-content border-0 shadow-lg rounded-4">
+            ${content}
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function openEditUser(userId) {
+      const u = getUsers().find(u => u.id === userId);
+      if (!u) return;
+      setState({ editUser: { ...u }, modalType: 'editPegawai' });
+    }
+
+    function confirmDeleteUser(userId) {
+      const u = getUsers().find(u => u.id === userId);
+      if (!u) return;
+      setState({ modalType: 'deleteUser', modalData: u });
+    }
+
+    // ============================================================
+    // MAIN RENDER FUNCTION
+    // ============================================================
+    function render() {
+      const app = document.getElementById('app');
+      if (!app) return;
+
+      let html = '';
+      if (state.currentPage === 'login') html = renderLogin();
+      else if (state.currentPage === 'admin') html = renderAdmin();
+      else if (state.currentPage === 'pegawai') html = renderPegawai();
+
+      if (state.toast) {
+        html += `
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+          <div class="toast show align-items-center text-bg-${state.toast.type} border-0 shadow-lg rounded-3" role="alert">
+            <div class="d-flex">
+              <div class="toast-body small fw-semibold">${state.toast.msg}</div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="setState({toast:null})"></button>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      if (state.modalType) html += renderModal();
+
+      app.innerHTML = html;
+      attachEventListeners();
+    }
+
+    // ============================================================
+    // EVENT LISTENERS
+    // ============================================================
+    function attachEventListeners() {
+      const loginForm = document.getElementById('login-form');
+      if (loginForm) {
+        loginForm.onsubmit = e => {
+          e.preventDefault();
+          const id = document.getElementById('login-id')?.value?.trim();
+          const pass = document.getElementById('login-pass')?.value;
+          login(id, pass, state.loginMode);
+        };
+      }
+
+      const settingsForm = document.getElementById('settings-form');
+      if (settingsForm) {
+        settingsForm.onsubmit = e => {
+          e.preventDefault();
+          const fd = new FormData(settingsForm);
+          const s = getSettings();
+          s.namaKantor = fd.get('namaKantor') || s.namaKantor;
+          s.namaKabupaten = fd.get('namaKabupaten') || s.namaKabupaten;
+          s.kecamatan = fd.get('kecamatan') || s.kecamatan;
+          s.provinsi = fd.get('provinsi') || s.provinsi;
+          s.jamMasuk = fd.get('jamMasuk') || s.jamMasuk;
+          s.jamPulang = fd.get('jamPulang') || s.jamPulang;
+          s.toleransiMenit = parseInt(fd.get('toleransiMenit')) || 15;
+          s.lat = parseFloat(fd.get('lat')) || s.lat;
+          s.lng = parseFloat(fd.get('lng')) || s.lng;
+          s.radiusMeters = parseInt(fd.get('radiusMeters')) || 250;
+          s.geofencingAktif = fd.get('geofencingAktif') === 'on';
+          saveSettings(s);
+        };
+      }
+
+      const userForm = document.getElementById('user-form');
+      if (userForm) {
+        userForm.onsubmit = e => {
+          e.preventDefault();
+          const isNew = state.modalType === 'tambahPegawai';
+          const userData = isNew ? { ...state.newUser } : { ...state.editUser };
+          userData.nama = document.getElementById('u-nama')?.value?.trim() || userData.nama;
+          userData.nip = document.getElementById('u-nip')?.value?.trim() || userData.nip;
+          userData.nik = document.getElementById('u-nik')?.value?.trim() || userData.nik;
+          userData.jabatan = document.getElementById('u-jabatan')?.value || userData.jabatan;
+          userData.role = document.getElementById('u-role')?.value || userData.role;
+          const newPw = document.getElementById('u-password')?.value;
+          if (newPw) userData.password = newPw;
+          userData.pin = document.getElementById('u-pin')?.value?.trim() || userData.pin;
+          userData.nohp = document.getElementById('u-nohp')?.value?.trim() || userData.nohp;
+          userData.alamat = document.getElementById('u-alamat')?.value?.trim() || userData.alamat;
+          saveUser(userData, isNew);
+        };
+      }
+    }
+
+    // ============================================================
+    // SMOOTH DIGITAL CLOCK UPDATE (NO PAGE REBUILD)
+    // ============================================================
+    function tickClock() {
+      const now = new Date();
+      state.currentTime = now;
+
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+      const timeStr = `${hh}:${mm}:${ss}`;
+      const timeHHMM = `${hh}:${mm}`;
+
+      const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      const monthsShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      const monthsLong = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+      const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${monthsShort[now.getMonth()]} ${now.getFullYear()}`;
+      const dateStrLong = `${days[now.getDay()]}, ${now.getDate()} ${monthsLong[now.getMonth()]} ${now.getFullYear()}`;
+
+      const clockTime = document.getElementById('clock-time');
+      const clockDate = document.getElementById('clock-date');
+      if (clockTime) clockTime.textContent = timeStr;
+      if (clockDate) clockDate.textContent = dateStr;
+
+      const inlineTime = document.getElementById('inline-clock-time');
+      const inlineDate = document.getElementById('inline-clock-date');
+      if (inlineTime) inlineTime.textContent = `${timeHHMM} WITA`;
+      if (inlineDate) inlineDate.textContent = dateStrLong;
+    }
+    setInterval(tickClock, 1000);
+
+    // ============================================================
+    // INITIALIZATION
+    // ============================================================
+    function init() {
+      seedData();
+      const savedUserId = DB.get('currentUser');
+      if (savedUserId) {
+        const u = getUsers().find(u => u.id === savedUserId);
+        if (u) {
+          state.currentUser = u;
+          state.currentPage = u.role === 'admin' ? 'admin' : 'pegawai';
+        }
+      }
+      render();
+      tickClock();
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
